@@ -17,12 +17,13 @@ export function handoffReport(s,start,end=start){
  const describe=(t,date)=>t.title+(t.target?` — ${t.actual||0}/${t.target} prepared${!t.done&&(t.actual||0)<t.target?`, ${t.target-(t.actual||0)} remaining`:''}`:'')+(t.neededFor&&t.neededFor!==date?` — Needed ${reportNeededDate(t.neededFor)}`:'')+(t.notes?` — ${t.notes}`:'');
  for(let date=start;date<=end;date=shiftDate(date,1)){
   if(lines.length)lines.push('','');lines.push(reportDate(date));
-  const daily=dailyRows(s,date).filter(t=>!t.excludeFromReport),prep=prepRows(s,date).filter(t=>!t.excludeFromReport).map(t=>({...t,done:!!t.completedAt}));
+  const all=dailyRows(s,date),reminders=all.filter(t=>t.kind==='routine'&&t.excludeFromReport===false),daily=all.filter(t=>t.kind==='task'&&!t.excludeFromReport),prep=prepRows(s,date).filter(t=>!t.excludeFromReport).map(t=>({...t,done:!!t.completedAt}));
   const prepared=prep.filter(t=>t.done);
   const pending=new Map();for(const t of [...prep.filter(t=>!t.done),...daily.filter(t=>!t.done),...overdueRows(s,date).filter(t=>!t.excludeFromReport&&t.doOn<start).map(t=>({...t,done:false}))])pending.set(t.id,t);
   for(const [label,rows] of [['Already prepared for this day',prepared],['Needs completed today',[...pending.values()]]])if(rows.length){lines.push('',label+':');rows.forEach(t=>lines.push('','• '+describe(t,date)))}
   const completed=daily.filter(t=>t.done&&!prepared.some(p=>p.id===t.id));if(completed.length){lines.push('','Completed today:');completed.forEach(t=>lines.push('','• '+describe(t,date)))}
-  if(!prepared.length&&!pending.size&&!completed.length)lines.push('','No report items for this day.');
+  if(reminders.length){lines.push('','Daily reminders:');reminders.forEach(t=>lines.push('','• '+t.title+(t.notes?' — '+t.notes:'')))}
+  if(!prepared.length&&!pending.size&&!completed.length&&!reminders.length)lines.push('','No report items for this day.');
  }
  return lines.join('\n');
 }
