@@ -24,3 +24,6 @@ Run `python3 -m http.server 8000` in this directory and open localhost:8000. Run
 
 ## Quantity tracking
 Set an optional Target amount when adding/editing a task or routine. Use Update progress to record the total completed so far (not the additional amount). Partial amounts stay unfinished in the daily list and prep readiness. Reaching/exceeding the target completes the task; lowering the amount reopens it. Routine amounts reset per day. Existing tasks and older backups still work.
+
+## Compact reminders and quick completion
+Daily routines are managed under Settings → Daily routines. Add reminders, choose weekdays and phases, edit them, or stop them from the selected date onward. Daily pages group routines into compact checkbox rows without Edit buttons. For counted tasks, checking the box fills the count to its target; unchecking resets to zero. Update progress also offers Complete to fill the target with one tap. The task form order is Task, Count, Do on, Needed for, Workday phase, Type, Notes (repeating weekday controls appear when that type is selected).
