@@ -10,18 +10,18 @@ export function overdueRows(s,date){return s.tasks.filter(t=>t.doOn<date&&!t.com
 export function validateBackup(s){const date=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&!isNaN(new Date(x+'T12:00:00').getTime())&&localDate(new Date(x+'T12:00:00'))===x;const text=x=>typeof x==='string'&&x.length<=250;const count=x=>Number.isInteger(x)&&x>=0&&x<=1000000000;const quantities=t=>(t.target===undefined||t.target===null||count(t.target)&&t.target>0)&&(t.actual===undefined||count(t.actual));const base=t=>t&&quantities(t)&&(t.excludeFromReport===undefined||typeof t.excludeFromReport==='boolean')&&(t.mustFinish===undefined||typeof t.mustFinish==='boolean')&&text(t.title)&&t.title.trim()&&phases.includes(t.phase)&&typeof t.notes==='string'&&t.notes.length<=2000;const stamp=x=>x===null||typeof x==='string'&&!isNaN(Date.parse(x));if(!s||s.version!==1||!Array.isArray(s.tasks)||!Array.isArray(s.routines)||!Array.isArray(s.skips)||!s.checks||typeof s.checks!=='object'||Array.isArray(s.checks))return false;const ids=new Set();for(const t of [...s.tasks,...s.routines]){if(!t||typeof t.id!=='string'||ids.has(t.id))return false;ids.add(t.id)}return s.tasks.every(t=>base(t)&&date(t.doOn)&&(!t.neededFor||date(t.neededFor)&&t.neededFor>=t.doOn)&&stamp(t.completedAt))&&s.routines.every(r=>Array.isArray(r.versions)&&r.versions.length>0&&r.versions.every(v=>base(v)&&date(v.from)&&Array.isArray(v.days)&&v.days.every(d=>Number.isInteger(d)&&d>=0&&d<=6)&&typeof v.retired==='boolean'))&&s.skips.every(date)&&(s.amounts===undefined||s.amounts&&typeof s.amounts==='object'&&!Array.isArray(s.amounts)&&Object.entries(s.amounts).every(([k,v])=>date(k.split('|')[0])&&s.routines.some(r=>r.id===k.split('|')[1])&&count(v)))&&Object.entries(s.checks).every(([k,v])=>date(k.split('|')[0])&&s.routines.some(r=>r.id===k.split('|')[1])&&stamp(v));}
 
 export function leavingRows(s,date){return dailyRows(s,date).filter(t=>t.kind==='task'&&!t.done&&(t.mustFinish||t.neededFor&&t.neededFor>date))}
-export function reportDate(date){const d=new Date(date+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+' ('+d.toLocaleDateString('en-US',{weekday:'long'})+')'}
-export function reportNeededDate(date){const d=new Date(date+'T12:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric'})+' ('+d.toLocaleDateString('en-US',{weekday:'long'})+')'}
+export function reportDate(date){const d=new Date(date+'T12:00:00');return d.toLocaleDateString('en-US',{weekday:'long'})+' '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+export const reportNeededDate=reportDate;
 export function handoffReport(s,start,end=start){
  const lines=[];
- const describe=t=>t.title+(t.target?` — ${t.actual||0}/${t.target} prepared${!t.done&&(t.actual||0)<t.target?`, ${t.target-(t.actual||0)} remaining`:''}`:'')+(t.neededFor?` (needed ${reportNeededDate(t.neededFor)})`:'')+(t.notes?` — ${t.notes}`:'');
+ const describe=(t,date)=>t.title+(t.target?` — ${t.actual||0}/${t.target} prepared${!t.done&&(t.actual||0)<t.target?`, ${t.target-(t.actual||0)} remaining`:''}`:'')+(t.neededFor&&t.neededFor!==date?` — Needed ${reportNeededDate(t.neededFor)}`:'')+(t.notes?` — ${t.notes}`:'');
  for(let date=start;date<=end;date=shiftDate(date,1)){
   if(lines.length)lines.push('','');lines.push(reportDate(date));
   const daily=dailyRows(s,date).filter(t=>!t.excludeFromReport),prep=prepRows(s,date).filter(t=>!t.excludeFromReport).map(t=>({...t,done:!!t.completedAt}));
   const prepared=prep.filter(t=>t.done);
   const pending=new Map();for(const t of [...prep.filter(t=>!t.done),...daily.filter(t=>!t.done),...overdueRows(s,date).filter(t=>!t.excludeFromReport&&t.doOn<start).map(t=>({...t,done:false}))])pending.set(t.id,t);
-  for(const [label,rows] of [['Already prepared for this day',prepared],['Needs completed today',[...pending.values()]]])if(rows.length){lines.push('',label+':');rows.forEach(t=>lines.push('','• '+describe(t)))}
-  const completed=daily.filter(t=>t.done&&!prepared.some(p=>p.id===t.id));if(completed.length){lines.push('','Completed today:');completed.forEach(t=>lines.push('','• '+describe(t)))}
+  for(const [label,rows] of [['Already prepared for this day',prepared],['Needs completed today',[...pending.values()]]])if(rows.length){lines.push('',label+':');rows.forEach(t=>lines.push('','• '+describe(t,date)))}
+  const completed=daily.filter(t=>t.done&&!prepared.some(p=>p.id===t.id));if(completed.length){lines.push('','Completed today:');completed.forEach(t=>lines.push('','• '+describe(t,date)))}
   if(!prepared.length&&!pending.size&&!completed.length)lines.push('','No report items for this day.');
  }
  return lines.join('\n');

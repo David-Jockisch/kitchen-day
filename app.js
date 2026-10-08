@@ -1,4 +1,4 @@
-import {phases,localDate,shiftDate,dailyRows,prepRows,overdueRows,validateBackup,quantityStatus,recordAmount,routineVersion,leavingRows,handoffReport,reportDate} from './model.mjs?v=1.3.2';
+import {phases,localDate,shiftDate,dailyRows,prepRows,overdueRows,validateBackup,quantityStatus,recordAmount,routineVersion,leavingRows,handoffReport,reportDate} from './model.mjs?v=1.3.3';
 const $=id=>document.getElementById(id);let state,db,selected=localDate(),editing=null,busy=false,amountItem=null,amountDate=null;
 const pretty=d=>new Date(d+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'});
 function initial(){return {version:1,tasks:[],routines:['Turn on lights','Unlock refrigerators and freezers','Check and record temperatures'].map(title=>({id:crypto.randomUUID(),versions:[{from:localDate(),title,phase:'First thing',notes:'',days:[1,2,3,4,5],retired:false}]})),checks:{},amounts:{},skips:[],lastBackup:null}}
