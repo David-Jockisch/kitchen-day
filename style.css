@@ -4,3 +4,6 @@ input::placeholder,textarea::placeholder{color:#829087;opacity:1;font-style:ital
 
 /* Keep form controls at 16px instead of inheriting 14px labels. */
 input:not([type=checkbox]),select,textarea{font-size:16px}
+
+/* Allow scrolling and pinch zoom, without double-tap zoom. */
+html,body,button,input,select,textarea,label,.row{touch-action:manipulation}
