@@ -7,3 +7,12 @@ input:not([type=checkbox]),select,textarea{font-size:16px}
 
 /* Allow scrolling and pinch zoom, without double-tap zoom. */
 html,body,button,input,select,textarea,label,.row{touch-action:manipulation}
+
+/* Keep native iPhone date controls within the form's padded edges. */
+dialog form,dialog label{min-width:0}
+dialog label{margin:20px 0}
+dialog input:not([type=checkbox]),dialog select,dialog textarea{min-width:0;max-width:100%;padding:14px 16px;margin-top:9px;min-height:50px}
+input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none}
+input[type=date]::-webkit-date-and-time-value{min-height:22px;text-align:left}
+nav>div{min-width:0;flex:1}
+nav input[type=date]{width:180px;max-width:100%;padding:10px 12px;margin:0 auto}
