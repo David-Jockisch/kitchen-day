@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {dailyRows,prepRows,overdueRows,shiftDate,validateBackup} from '../model.mjs';
+const fixture=()=>({version:1,tasks:[{id:'bread',title:'Prep 120 garlic breads',doOn:'2026-10-05',neededFor:'2026-10-06',phase:'After breakfast',notes:'',completedAt:null}],routines:[{id:'lights',versions:[{from:'2026-10-01',title:'Lights',phase:'First thing',notes:'',days:[1,2,3,4,5],retired:false}]}],checks:{},skips:[]});
+test('prep completion shares one record across dates',()=>{const s=fixture();assert.equal(prepRows(s,'2026-10-06')[0],s.tasks[0]);s.tasks[0].completedAt='2026-10-05T16:00:00Z';assert.ok(dailyRows(s,'2026-10-05').find(t=>t.id==='bread').done);assert.ok(prepRows(s,'2026-10-06')[0].completedAt);assert.equal(dailyRows(s,'2026-10-06').filter(t=>t.id==='bread').length,0)});
+test('routine checks reset daily and respect weekends',()=>{const s=fixture();s.checks['2026-10-05|lights']='2026-10-05T12:00:00Z';assert.ok(dailyRows(s,'2026-10-05').find(t=>t.id==='lights').done);assert.equal(dailyRows(s,'2026-10-06')[0].done,false);assert.equal(dailyRows(s,'2026-10-10').length,0)});
+test('skip date hides routines',()=>{const s=fixture();s.skips.push('2026-10-06');assert.equal(dailyRows(s,'2026-10-06').length,0)});
+test('overdue does not duplicate today prep',()=>{const s=fixture();assert.equal(overdueRows(s,'2026-10-06').length,0);assert.equal(overdueRows(s,'2026-10-07').length,1)});
+test('backups reject duplicate IDs and invalid dates',()=>{const s=fixture();assert.ok(validateBackup(s));s.tasks.push({...s.tasks[0]});assert.equal(validateBackup(s),false);s.tasks.pop();s.tasks[0].doOn='2026-02-30';assert.equal(validateBackup(s),false)});
+test('date navigation handles boundaries',()=>{assert.equal(shiftDate('2026-12-31',1),'2027-01-01');assert.equal(shiftDate('2026-03-01',-1),'2026-02-28')});
