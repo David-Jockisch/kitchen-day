@@ -21,3 +21,6 @@ The initial service worker caches the app for offline use. For future code updat
 
 ## Development
 Run `python3 -m http.server 8000` in this directory and open localhost:8000. Run model tests with `node --test tests/model.test.mjs`. Static relative URLs support GitHub Pages project subpaths. No external fonts, scripts, or analytics.
+
+## Quantity tracking
+Set an optional Target amount when adding/editing a task or routine. Use Update progress to record the total completed so far (not the additional amount). Partial amounts stay unfinished in the daily list and prep readiness. Reaching/exceeding the target completes the task; lowering the amount reopens it. Routine amounts reset per day. Existing tasks and older backups still work.
