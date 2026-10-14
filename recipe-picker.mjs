@@ -5,6 +5,20 @@ export function createRecipeLinker({ getState, change }) {
   let catalog = null, loading = null, menuLabel = '', picked = null, request = 0;
   let shown = 30, saving = false, returnFocus = null;
 
+  // Older cached planner pages do not contain the preview dialog yet.
+  // Create it before binding handlers so an update cannot stop startup.
+  if (!$('menuRecipePreview')) {
+    const dialog = document.createElement('dialog');
+    dialog.id = 'menuRecipePreview';
+    dialog.setAttribute('aria-labelledby', 'menuRecipePreviewTitle');
+    dialog.innerHTML = `<div class="menu-preview-layout">
+      <div class="menu-preview-header"><h2 id="menuRecipePreviewTitle">Recipe preview</h2><button id="closeMenuRecipePreview">Close ×</button></div>
+      <p id="menuRecipePreviewStatus" role="status"></p>
+      <iframe id="menuRecipeFrame" title="Recipe PDF preview" hidden></iframe>
+      <div class="menu-preview-footer"><span>PDFs need an internet connection.</span><a id="menuRecipeFallback" target="_blank" rel="noopener" hidden>Open PDF separately ↗</a></div>
+    </div>`;
+    document.body.append(dialog);
+  }
   let previewRequest = 0, previewFocus = null;
 
   function recipeAnchor(id, label) {
