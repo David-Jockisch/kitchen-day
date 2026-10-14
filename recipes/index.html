@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#183e37">
+  <title>Recipe Library | Kitchen Day</title>
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+  <header class="header">
+    <div class="top">
+      <a class="back" href="../../" aria-label="Back to Kitchen Day">← Kitchen Day</a>
+      <button id="settingsButton" class="icon-button" aria-label="Library settings">⚙</button>
+    </div>
+    <div class="heading"><div><p class="eyebrow">YOUR KITCHEN COLLECTION</p><h1>Recipe library</h1></div><span id="total" class="count">Loading…</span></div>
+  </header>
+
+  <div class="search-dock">
+    <div class="search-row">
+      <label class="search"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Name, ingredient, or recipe ID" aria-label="Search recipes" autocomplete="off"><button id="clear" class="icon-button" aria-label="Clear search" hidden>×</button></label>
+      <button id="filtersButton" class="filter-button" aria-haspopup="dialog">Filters <span id="filterCount" hidden></span></button>
+    </div>
+    <div class="browse-tabs" aria-label="Browse recipes"><button id="allTab" class="selected" aria-pressed="true">All recipes</button><button id="favoritesTab" aria-pressed="false">☆ Favorites</button></div>
+  </div>
+
+  <main>
+    <div class="results-heading"><p id="results" role="status">Loading your recipes…</p><button id="reset" class="text-button" hidden>Reset filters</button></div>
+    <div id="activeFilters" class="active-filters"></div>
+    <div id="list" class="recipe-list" aria-label="Recipes"></div>
+    <div id="empty" class="empty" hidden><span aria-hidden="true">⌕</span><h2>No recipes found</h2><p>Try a shorter search or remove a filter.</p><button id="resetEmpty" class="primary">Show all recipes</button></div>
+    <div class="paging"><button id="more" class="secondary" hidden>Show more recipes</button></div>
+    <p class="footer-note">Original recipes, ready when you need them.<br>PDFs need an internet connection.</p>
+  </main>
+
+  <dialog id="filtersDialog" class="sheet" aria-labelledby="filtersTitle">
+    <div class="sheet-header"><h2 id="filtersTitle">Filter recipes</h2><button id="closeFilters" class="icon-button" aria-label="Close filters">×</button></div>
+    <div class="sheet-content">
+      <label class="field">Meal type<select id="meal"><option value="All">All meals</option><option>Breakfast</option><option>Lunch</option><option>Snack</option><option>Other</option><option>Uncategorized</option></select></label>
+      <label class="field">Food type<select id="category"><option value="">All food types</option></select></label>
+      <label class="field">Collection<select id="collection"><option value="">All collections</option></select></label>
+      <label class="field">Sort by<select id="sort"><option value="name">Name (A–Z)</option><option value="year">Year / collection</option><option value="id">Archive ID</option></select></label>
+      <p class="hint">Meal and food types start blank. You can assign them inside each recipe.</p>
+    </div>
+    <div class="sheet-footer"><button id="resetFilters" class="secondary">Reset</button><button id="applyFilters" class="primary">Show recipes</button></div>
+  </dialog>
+
+  <dialog id="detail" class="recipe-dialog" aria-labelledby="detailTitle">
+    <div class="detail-nav"><button id="close" class="secondary">← All recipes</button><button id="favorite" class="secondary" aria-pressed="false">☆ Favorite</button></div>
+    <div class="detail-heading"><p id="detailId" class="eyebrow"></p><h2 id="detailTitle"></h2><p id="detailSource"></p></div>
+    <div class="pdf-actions"><a id="openPdf" class="primary" target="_blank" rel="noopener">Open recipe PDF ↗</a><button id="togglePreview" class="secondary" aria-expanded="false" aria-controls="preview">Preview here</button></div>
+    <div id="preview" class="preview" hidden><iframe id="pdf" title="Original recipe PDF"></iframe><p class="hint">Preview not displaying correctly? Use “Open recipe PDF” above.</p></div>
+    <div class="recipe-extras">
+      <details id="notesSection"><summary>Kitchen notes & categories <span id="notesIndicator"></span></summary><div class="details-content">
+        <label class="field">My kitchen notes<textarea id="notes" rows="4" maxlength="10000" placeholder="Tray counts, substitutions, or helpful reminders…"></textarea></label>
+        <fieldset><legend>Meal type</legend><div id="editMeals" class="checkgrid"></div></fieldset>
+        <label class="field">Food type<select id="editCategory"></select></label>
+        <button id="save" class="primary">Save notes & categories</button><p id="saveStatus" class="status" role="status"></p>
+        <p class="hint">Saved on this device. Back up notes and favorites in Library settings.</p>
+      </div></details>
+      <details><summary>Recipe source details</summary><div id="info" class="details-content info"></div></details>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog" class="sheet" aria-labelledby="settingsTitle">
+    <div class="sheet-header"><h2 id="settingsTitle">Library settings</h2><button id="closeSettings" class="icon-button" aria-label="Close settings">×</button></div>
+    <div class="sheet-content"><h3>Your notes & favorites</h3><p>Notes, categories, and favorites stay in this browser. Export a backup to keep them safe or move to another device.</p><button id="export" class="secondary full-width">Export library backup</button><label class="import-button secondary full-width">Import library backup<input id="import" type="file" accept=".json,application/json"></label><p id="backupStatus" class="status" role="status"></p><p class="hint">Existing classification backups are supported. Import merges the recipes in the backup with your saved entries. Your original PDFs are never changed.</p></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="app.js?v=2" defer></script>
+</body>
+</html>
