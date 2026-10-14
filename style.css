@@ -63,3 +63,25 @@ button.menu-change-link{font-size:12px;padding:6px 10px;min-height:44px;flex-shr
 button.recipe-preview-button{background:transparent;border:0;color:#245846;padding:7px 0;text-align:left;text-decoration:underline;min-height:44px;justify-self:start;font-size:13px}
 button.menu-recipe-link{background:transparent;border:0;border-radius:5px;font:inherit;font-weight:650;text-align:left}
 @media(max-width:600px){#menuRecipePreview{width:calc(100vw - 28px);max-width:calc(100vw - 28px);height:86dvh;max-height:86dvh;border-radius:14px}.menu-preview-header{padding:12px}.menu-preview-header h2{font-size:16px}#menuRecipePreviewStatus{padding:9px 12px}.menu-preview-footer{padding:5px 12px}}
+
+/* Readable recipes, pilot 0.1 */
+.readable-recipe{font-size:16px;line-height:1.55;color:#203b32;text-align:left;overflow-wrap:anywhere}
+.readable-label{font-size:12px;font-weight:700;letter-spacing:.03em;color:#23634e;margin:0 0 8px}
+.readable-yield{font-size:18px;font-weight:700;margin:0 0 6px}
+.readable-caption{font-size:12px;color:#62756a;line-height:1.5;margin:8px 0 16px}
+.readable-recipe h3{font-size:17px;margin:24px 0 10px}
+.readable-ingredients{list-style:none;padding:0;margin:0}
+.readable-ingredients li{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,36%);gap:14px;padding:12px 0;border-bottom:1px solid #dce4db}
+.readable-ingredients strong{font-size:16px;text-align:right;white-space:normal}
+.readable-steps,.readable-notes{padding-left:24px;margin:0}
+.readable-steps li,.readable-notes li{padding:7px 0}
+.readable-notes{background:#f1f4e9;border-radius:10px;padding:10px 14px 10px 34px}
+#menuRecipeReadable{flex:1;min-height:0;overflow:auto;padding:16px 18px;overscroll-behavior:contain}
+#menuRecipeReadable[hidden],#menuRecipeViewToggle[hidden]{display:none}
+#menuRecipeViewToggle{min-height:44px;font-size:13px;padding:8px 12px}
+#readableRecipe{padding:0 20px 20px}
+.readable-sample-panel{margin:0 0 20px;border:1px solid #dce4db;background:#eef4ec;border-radius:12px;padding:14px}
+.readable-sample-panel summary{cursor:pointer;font-weight:650;font-size:14px}
+.readable-samples{display:grid;gap:8px;margin-top:12px}
+.readable-samples button{text-align:left;padding:12px;border:1px solid #dce4db;border-radius:8px;background:white;color:#203b32;font-size:14px;min-height:44px}
+@media(max-width:420px){.readable-ingredients li{grid-template-columns:minmax(0,1fr);gap:4px}.readable-ingredients strong{text-align:left}.readable-yield{font-size:17px}}

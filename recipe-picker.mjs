@@ -1,3 +1,4 @@
+import {renderRecipeCard} from './recipe-cards.mjs?v=0.1.0';
 import { linkedRecipe, menuItemKey, recipeHref, removeRecipeLink, searchRecipes, setRecipeLink } from './recipe-links.mjs?v=1.7.0';
 
 export function createRecipeLinker({ getState, change }) {
@@ -19,6 +20,22 @@ export function createRecipeLinker({ getState, change }) {
     </div>`;
     document.body.append(dialog);
   }
+  if (!$('menuRecipeReadable')) {
+    const readable = document.createElement('div');
+    readable.id = 'menuRecipeReadable'; readable.hidden = true;
+    $('menuRecipeFrame').before(readable);
+    const toggle = document.createElement('button');
+    toggle.id = 'menuRecipeViewToggle'; toggle.type = 'button'; toggle.hidden = true;
+    $('menuRecipeFallback').before(toggle);
+  }
+  $('menuRecipeViewToggle').onclick = () => {
+    const showPDF = $('menuRecipeFrame').hidden;
+    $('menuRecipeFrame').src = showPDF ? $('menuRecipeFallback').href : 'about:blank';
+    $('menuRecipeFrame').hidden = !showPDF;
+    $('menuRecipeReadable').hidden = showPDF;
+    $('menuRecipeViewToggle').textContent = showPDF ? 'Readable recipe' : 'Original PDF';
+    $('menuRecipeViewToggle').setAttribute('aria-pressed', String(showPDF));
+  };
   let previewRequest = 0, previewFocus = null;
 
   function recipeAnchor(id, label) {
@@ -39,6 +56,9 @@ export function createRecipeLinker({ getState, change }) {
     $('menuRecipeFrame').hidden = true;
     $('menuRecipeFrame').src = 'about:blank';
     $('menuRecipeFallback').hidden = true;
+    $('menuRecipeReadable').replaceChildren();
+    $('menuRecipeReadable').hidden = true;
+    $('menuRecipeViewToggle').hidden = true;
     if (!dialog.open) dialog.showModal();
     $('closeMenuRecipePreview').focus({ preventScroll: true });
     try {
@@ -54,6 +74,16 @@ export function createRecipeLinker({ getState, change }) {
       $('menuRecipeFallback').hidden = false;
       $('menuRecipeFrame').hidden = false;
       $('menuRecipeFrame').src = url.href;
+      const readable = renderRecipeCard(id);
+      if (readable) {
+        $('menuRecipeFrame').src = 'about:blank';
+        $('menuRecipeReadable').replaceChildren(readable);
+        $('menuRecipeReadable').hidden = false;
+        $('menuRecipeFrame').hidden = true;
+        $('menuRecipeViewToggle').hidden = false;
+        $('menuRecipeViewToggle').textContent = 'Original PDF';
+        $('menuRecipeViewToggle').setAttribute('aria-pressed','false');
+      }
     } catch (error) {
       if (token === previewRequest && dialog.open) $('menuRecipePreviewStatus').textContent = error.message || 'Unable to load this recipe. Check your internet connection and try again.';
     }

@@ -1,3 +1,4 @@
+import {recipeCards,renderRecipeCard} from '../recipe-cards.mjs?v=0.1.0';
 'use strict';
 
 const $ = id => document.getElementById(id);
@@ -154,6 +155,9 @@ function openRecipe(id, changeURL = true) {
   $('detailId').textContent = recipe.id;
   $('detailTitle').textContent = recipe.name;
   $('detailSource').textContent = recipe.collection;
+  const readable=renderRecipeCard(id);
+  $('readableRecipe').replaceChildren(...(readable?[readable]:[]));
+  $('readableRecipe').hidden=!readable;
   $('info').innerHTML = `<b>Publisher:</b> ${escapeHTML(recipe.provider)}<br><b>Year:</b> ${escapeHTML(recipe.sourceYear)}<br><b>Original recipe ID:</b> ${escapeHTML(recipe.originalRecipeId || 'Not provided')}<br><b>Source:</b> ${escapeHTML(recipe.sourceDocument)}<br><b>Pages:</b> ${escapeHTML(pages.start ?? '?')}${pages.end && pages.end !== pages.start ? '–' + escapeHTML(pages.end) : ''}`;
   $('editMeals').innerHTML = meals.map(meal => `<label><input type="checkbox" value="${meal}" ${(value.mealTypes || []).includes(meal) ? 'checked' : ''}>${meal}</label>`).join('');
   $('editCategory').value = value.category || '';
@@ -303,3 +307,9 @@ fetch('recipes.json').then(response => {
   $('results').textContent = 'Could not load recipes. Check your connection and reload this page.';
   $('total').textContent = 'Unavailable';
 });
+
+const sampleLinks=document.createElement('div');sampleLinks.className='readable-samples';
+const sampleTitle=document.createElement('summary');sampleTitle.textContent='Try 6 readable recipes · Preview 0.1';
+const samplePanel=document.createElement('details');samplePanel.className='readable-sample-panel';samplePanel.append(sampleTitle,sampleLinks);
+for(const recipe of Object.values(recipeCards)){const button=document.createElement('button');button.type='button';button.textContent=recipe.name+' · '+recipe.collection;button.onclick=()=>openRecipe(recipe.id);sampleLinks.append(button);}
+document.querySelector('main').prepend(samplePanel);

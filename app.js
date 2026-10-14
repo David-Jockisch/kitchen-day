@@ -1,4 +1,4 @@
-import {createRecipeLinker} from './recipe-picker.mjs?v=1.7.2';
+import {createRecipeLinker} from './recipe-picker.mjs?v=1.8.0';
 import {seedMenu} from './menu.mjs?v=1.7.0';
 import {phases,localDate,shiftDate,dailyRows,prepRows,overdueRows,validateBackup,quantityStatus,recordAmount,routineVersion,leavingRows,futurePrepRows,todayFoodRows,handoffReport,reportDate} from './model.mjs?v=1.7.0';
 const $=id=>document.getElementById(id);let state,db,selected=localDate(),editing=null,busy=false,amountItem=null,amountDate=null;
