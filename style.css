@@ -26,3 +26,24 @@ nav input[type=date]{width:180px;max-width:100%;padding:10px 12px;margin:0 auto}
 .reminder-group{background:#eef3e9;border:1px solid #dce4d8;border-radius:13px;padding:12px 16px;margin:8px 0}.reminder-label{font-size:13px;color:#617065;margin:0 0 8px}.reminder-group ul{padding-left:22px;margin:0}.reminder-group li{padding:6px 0;line-height:1.5;overflow-wrap:anywhere}.reminder-group small{display:block;color:#627369;white-space:pre-wrap;font-size:14px}
 
 #menu h3{margin:16px 0 6px}#menu ul{padding-left:22px;margin:0 0 12px;line-height:1.6}#menu .menu-note{font-weight:650;color:#24453b}
+
+/* Menu-to-recipe links */
+.recipe-library-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:11px 15px;border:1px solid #b9c9be;border-radius:12px;background:white;color:#24453b;text-decoration:none;font:inherit;white-space:nowrap;touch-action:manipulation}
+.recipe-library-link:focus-visible,.menu-recipe-link:focus-visible{outline:3px solid #df9d36;outline-offset:2px}.toolbar{flex-wrap:wrap}
+#menu .menu-link-hint{font-size:12px;color:#617065;margin:8px 0 12px}#menu ul{padding-left:0;list-style:none}
+.menu-recipe-item{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;border-bottom:1px solid #edf0e9}
+.menu-recipe-item:last-child{border:0}.menu-recipe-link{color:#245846;font-weight:650;text-decoration:underline;text-underline-offset:3px;padding:10px 0;overflow-wrap:anywhere;min-width:0}
+button.menu-link-food{border:0;border-radius:5px;padding:10px 0;background:transparent;color:#384f42;text-align:left;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px;min-width:0;overflow-wrap:anywhere}
+button.menu-change-link{font-size:12px;padding:6px 10px;min-height:44px;flex-shrink:0;border-color:#dbe3d6;background:transparent}
+#recipePicker{width:min(650px,calc(100vw - 24px));padding:0;max-height:92dvh;overflow:auto}
+.recipe-picker-heading{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:start;gap:14px;padding:18px 20px;background:white;border-bottom:1px solid #dbe3d6}
+.recipe-picker-heading h2{margin:0;font-size:21px}.recipe-picker-heading p{margin:6px 0 0;color:#52685e;font-size:15px;overflow-wrap:anywhere}.recipe-picker-heading button{font-size:25px;min-width:44px;padding:4px}
+.recipe-picker-hint{margin:16px 20px;font-size:13px;color:#617065;line-height:1.6}
+.recipe-picker-search{margin:16px 20px}.recipe-picker-search label{font-size:13px;font-weight:650}.recipe-picker-search>div{display:flex;gap:8px;margin-top:6px}.recipe-picker-search input{min-width:0;flex:1;font-size:16px;margin:0}.recipe-picker-search button{font-size:13px}
+#recipeSearchStatus{font-size:13px;color:#617065;padding:0 20px;line-height:1.6}#retryRecipes,#moreRecipeMatches{margin:4px 20px 20px}
+#recipeMatches{display:grid;gap:8px;padding:0 20px 20px}button.recipe-match{display:grid;gap:5px;width:100%;text-align:left;background:white;padding:14px;min-width:0}
+.recipe-match strong{font-size:15px;overflow-wrap:anywhere}.recipe-match small{font-size:12px;color:#617065;line-height:1.5}.recipe-match[aria-pressed="true"]{border:2px solid #245846;background:#eef5eb;padding:13px}
+.recipe-picker-footer{position:sticky;bottom:0;padding:14px 20px max(14px,env(safe-area-inset-bottom));background:#f6f8f1;border-top:1px solid #dbe3d6;box-shadow:0 -5px 15px #183e3708}
+#recipeChoice{font-size:13px;line-height:1.5;display:grid;gap:3px;color:#52685e}#recipeChoice strong{color:#203a34;font-size:14px}#recipeChoice a{color:#245846;display:inline-block;padding:6px 0}#recipePickerStatus{font-size:13px;color:#9a3d27;line-height:1.5;margin:5px 0}
+.recipe-picker-actions{display:flex;gap:8px;align-items:center;margin-top:10px}.recipe-picker-actions .primary{margin-left:auto;flex:1}#unlinkRecipe{font-size:13px}
+@media(max-width:600px){#recipePicker{width:100%;max-width:100%;height:100dvh;max-height:100dvh;margin:0;border-radius:0}.recipe-picker-heading{padding-top:max(16px,env(safe-area-inset-top))}.recipe-picker-footer{padding-bottom:max(16px,env(safe-area-inset-bottom))}}
