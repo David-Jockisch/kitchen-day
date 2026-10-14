@@ -5,14 +5,69 @@ export function createRecipeLinker({ getState, change }) {
   let catalog = null, loading = null, menuLabel = '', picked = null, request = 0;
   let shown = 30, saving = false, returnFocus = null;
 
+  let previewRequest = 0, previewFocus = null;
+
   function recipeAnchor(id, label) {
-    const anchor = document.createElement('a');
-    anchor.href = recipeHref(id);
-    anchor.target = '_blank';
-    anchor.rel = 'noopener';
-    anchor.textContent = label;
-    return anchor;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'recipe-preview-button';
+    button.textContent = label;
+    button.onclick = () => openPreview(id);
+    return button;
   }
+
+  async function openPreview(id) {
+    const token = ++previewRequest;
+    previewFocus = document.activeElement;
+    const dialog = $('menuRecipePreview');
+    $('menuRecipePreviewTitle').textContent = 'Recipe preview';
+    $('menuRecipePreviewStatus').textContent = 'Loading recipe…';
+    $('menuRecipeFrame').hidden = true;
+    $('menuRecipeFrame').src = 'about:blank';
+    $('menuRecipeFallback').hidden = true;
+    if (!dialog.open) dialog.showModal();
+    $('closeMenuRecipePreview').focus({ preventScroll: true });
+    try {
+      const recipes = await loadCatalog();
+      if (token !== previewRequest || !dialog.open) return;
+      const recipe = recipes.find(value => value.id === id);
+      if (!recipe) throw Error('This recipe is no longer in the library. Change the menu link to choose another.');
+      const url = new URL('recipes/' + recipe.pdfPath, location.href);
+      if (url.origin !== location.origin || !url.pathname.endsWith('.pdf')) throw Error('This recipe does not have a valid PDF.');
+      $('menuRecipePreviewTitle').textContent = recipe.name;
+      $('menuRecipePreviewStatus').textContent = 'Tap outside this window or use Close to return.';
+      $('menuRecipeFallback').href = url.href;
+      $('menuRecipeFallback').hidden = false;
+      $('menuRecipeFrame').hidden = false;
+      $('menuRecipeFrame').src = url.href;
+    } catch (error) {
+      if (token === previewRequest && dialog.open) $('menuRecipePreviewStatus').textContent = error.message || 'Unable to load this recipe. Check your internet connection and try again.';
+    }
+  }
+
+  function closePreview() {
+    previewRequest++;
+    $('menuRecipePreview').close();
+    $('menuRecipeFrame').src = 'about:blank';
+    $('menuRecipeFrame').hidden = true;
+    if (previewFocus?.isConnected) previewFocus.focus({ preventScroll: true });
+  }
+
+  $('closeMenuRecipePreview').onclick = closePreview;
+  $('menuRecipePreview').addEventListener('cancel', event => { event.preventDefault(); closePreview(); });
+  // The dialog itself also receives backdrop clicks. Check its rectangle so
+  // clicks on whitespace inside the preview do not accidentally dismiss it.
+  const outside = event => {
+    const rect = $('menuRecipePreview').getBoundingClientRect();
+    return event.target === $('menuRecipePreview') &&
+      (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom);
+  };
+  let pressedOutside = false;
+  $('menuRecipePreview').addEventListener('pointerdown', event => { pressedOutside = outside(event); });
+  $('menuRecipePreview').addEventListener('click', event => {
+    if (pressedOutside && outside(event)) closePreview();
+    pressedOutside = false;
+  });
 
   async function loadCatalog() {
     if (catalog) return catalog;
@@ -36,7 +91,7 @@ export function createRecipeLinker({ getState, change }) {
       title.textContent = picked.name;
       const source = document.createElement('small');
       source.textContent = `${picked.collection || ''} · ${picked.id}`;
-      panel.append(title, source, recipeAnchor(picked.id, 'View recipe before linking ↗'));
+      panel.append(title, source, recipeAnchor(picked.id, 'Preview recipe'));
     } else panel.textContent = 'Choose a recipe from the results below.';
     $('saveRecipeLink').disabled = !picked || saving;
     $('saveRecipeLink').textContent = saving ? 'Saving…' : 'Link recipe';
@@ -118,9 +173,9 @@ export function createRecipeLinker({ getState, change }) {
     li.className = 'menu-recipe-item';
     const current = linkedRecipe(getState(), label);
     if (current) {
-      const anchor = recipeAnchor(current.recipeId, label + ' ↗');
+      const anchor = recipeAnchor(current.recipeId, label + ' ▣');
       anchor.className = 'menu-recipe-link';
-      anchor.setAttribute('aria-label', `${label}: open ${current.recipeName} in a new tab`);
+      anchor.setAttribute('aria-label', `${label}: open ${current.recipeName} in a preview`);
       const edit = document.createElement('button');
       edit.className = 'menu-change-link';
       edit.textContent = 'Change';

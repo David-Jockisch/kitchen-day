@@ -47,3 +47,19 @@ button.menu-change-link{font-size:12px;padding:6px 10px;min-height:44px;flex-shr
 #recipeChoice{font-size:13px;line-height:1.5;display:grid;gap:3px;color:#52685e}#recipeChoice strong{color:#203a34;font-size:14px}#recipeChoice a{color:#245846;display:inline-block;padding:6px 0}#recipePickerStatus{font-size:13px;color:#9a3d27;line-height:1.5;margin:5px 0}
 .recipe-picker-actions{display:flex;gap:8px;align-items:center;margin-top:10px}.recipe-picker-actions .primary{margin-left:auto;flex:1}#unlinkRecipe{font-size:13px}
 @media(max-width:600px){#recipePicker{width:100%;max-width:100%;height:100dvh;max-height:100dvh;margin:0;border-radius:0}.recipe-picker-heading{padding-top:max(16px,env(safe-area-inset-top))}.recipe-picker-footer{padding-bottom:max(16px,env(safe-area-inset-bottom))}}
+
+/* Recipes preview over the planner, including while choosing a link. */
+#menuRecipePreview{padding:0;width:min(1100px,92vw);max-width:92vw;height:88dvh;max-height:88dvh;border-radius:16px;overflow:hidden;margin:auto}
+#menuRecipePreview::backdrop{background:#102c2490}
+.menu-preview-layout{height:100%;display:flex;flex-direction:column;min-height:0;background:#fafbf7}
+.menu-preview-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #dbe3d6;flex-shrink:0}
+.menu-preview-header h2{font-size:19px;line-height:1.35;margin:0;overflow-wrap:anywhere;min-width:0;max-height:5.4em;overflow:auto;text-transform:none;letter-spacing:normal}
+.menu-preview-header button{white-space:nowrap;flex-shrink:0;min-height:44px;padding:9px 12px}
+#menuRecipePreviewStatus{font-size:12px;color:#617065;line-height:1.5;margin:0;padding:10px 18px;flex-shrink:0}
+#menuRecipeFrame{flex:1;width:100%;min-height:0;border:0;background:#e8ece9}
+#menuRecipeFrame[hidden]{display:none}
+.menu-preview-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 15px;padding:8px 18px;font-size:11px;color:#617065;flex-shrink:0}
+.menu-preview-footer a{color:#245846;padding:9px 0;font-size:12px}
+button.recipe-preview-button{background:transparent;border:0;color:#245846;padding:7px 0;text-align:left;text-decoration:underline;min-height:44px;justify-self:start;font-size:13px}
+button.menu-recipe-link{background:transparent;border:0;border-radius:5px;font:inherit;font-weight:650;text-align:left}
+@media(max-width:600px){#menuRecipePreview{width:calc(100vw - 28px);max-width:calc(100vw - 28px);height:86dvh;max-height:86dvh;border-radius:14px}.menu-preview-header{padding:12px}.menu-preview-header h2{font-size:16px}#menuRecipePreviewStatus{padding:9px 12px}.menu-preview-footer{padding:5px 12px}}
